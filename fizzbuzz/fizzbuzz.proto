@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package fizzbuzz;
+
+service FizzBuzz {
+    rpc GetFizzBuzzSequence (FizzBuzzRequest) returns (FizzBuzzResponse) {}
+}
+
+message FizzBuzzRequest {
+    int64 start = 1;
+    int64 end = 2;
+}
+
+message FizzBuzzResponse {
+    bool success = 1;
+    repeated string sequence = 2;
+}
