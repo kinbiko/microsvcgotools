@@ -6,12 +6,14 @@ Run the following to compare the output with and without [panicparse](https://gi
 
 ```bash
 go run ./boom/cmd/main.go #without panicparse
-go run ./boom/cmd/main.go |& pp
+go run ./boom/cmd/main.go 2>&1 | pp
 ```
 
 ## Run and manually test gRPC server with gRPCurl
 
 The `fizzbuzz` package contains a server that exposes a gRPC endpoint for getting "fizzbuzz" values for numbers in a certain interval.
+
+Use [`gRPCurl`](https://github.com/fullstorydev/grpcurl) to hit the endpoint without writing a gRPC client.
 
 ```bash
 # Run the gRPC server
@@ -27,12 +29,16 @@ echo '{"start": 0, "end": 100}' | grpcall
 
 ### Manually test through a web interface
 
+Take `gRPCurl` a step further and get a nice web UI with [`gRPCui`](https://github.com/fullstorydev/grpcui).
+
 ```bash
 # Start a web UI for hitting the same server (works because reflection is enabled)
 grpcui -plaintext localhost:1234
 ```
 
 ### Load test the gRPC server with ghz
+
+Use [`ghz`](https://github.com/bojand/ghz) to load test your gRCP server.
 
 ```bash
 ghz \
@@ -47,7 +53,9 @@ localhost:1234
 
 ### Generate and explore the gRPC server under load
 
+Assuming you have built and are running the binary `main` (built from ./fizzbuzz/grpc/main.go), run [pprof](https://github.com/google/pprof) to get profile your application.
+You probably want to use ghz to generate some load so your application isn't idle.
+
 ```bash
-go tool pprof http://localhost:4321/debug/pprof/profile
-# Start hitting the gRPC endpoint with ghz as above
+go tool pprof -http=":" main http://localhost:4321/debug/pprof/profile
 ```
